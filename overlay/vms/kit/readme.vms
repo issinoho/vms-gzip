@@ -50,6 +50,25 @@ can be unpacked anywhere.  Decompressing gives a Stream_LF file with the
 same lines.  Any other file (stream, fixed-length records: executables,
 kits, binary data) is compressed byte for byte.
 
+A .gz file does not record VMS file attributes, so decompressing always
+gives a Stream_LF file.  The bytes of a binary file come back unchanged,
+but set its record format again before use, for example for an image or
+a PCSI kit (fixed-length 512-byte records):
+
+    $ gunzip prog.exe.gz
+    $ set file/attributes=(rfm:fix,lrl:512,mrs:512,rat:none) prog.exe
+
+For files whose attributes matter, use a VMS-aware archiver (BACKUP, or
+Info-ZIP zip -V) and compress the archive.
+
+Output to a file
+----------------
+The C run-time library does not handle ">" on the command line.  Use DCL
+PIPE, or gzip's own file handling:
+
+    $ pipe gzip -c file.txt > file.txt.gz
+    $ pipe gzip -dc file.txt.gz | search sys$pipe "pattern"
+
 Exit status
 -----------
 Under DCL a failed run exits with an error-severity status, so ON ERROR and
