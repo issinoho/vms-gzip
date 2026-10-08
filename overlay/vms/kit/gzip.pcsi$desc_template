@@ -1,0 +1,30 @@
+--
+-- PCSI product description for GNU gzip on OpenVMS.
+-- Template: tools/prepare.sh substitutes @PRODUCER@, @BASE@ and @PCSIVERSION@.
+--
+product @PRODUCER@ @BASE@ GZIP @PCSIVERSION@ full ;
+
+    information RELEASE_NOTES phase after ;
+
+    directory [GZIP] ;
+    directory [GZIP.BIN] ;
+    directory [GZIP.DOC] ;
+
+    file [GZIP.BIN]GZIP.EXE ;
+    file [SYS$STARTUP]GZIP$STARTUP.COM ;
+    file [GZIP]GZIP$SETUP.COM ;
+    file [GZIP.DOC]README.VMS ;
+    file [GZIP.DOC]COPYING. ;
+    file [GZIP.DOC]NEWS. ;
+    file [GZIP.DOC]GZIP.TXT ;
+    file [GZIP.DOC]GZIP.1 ;
+
+    -- Define GZIP$ROOT now and print the post-installation tasks (PCSI shows
+    -- only the title of an information message unless /HELP is given).
+    execute postinstall "@PCSI$DESTINATION:[SYS$STARTUP]GZIP$STARTUP.COM INSTALL" interactive ;
+    -- On removal, deassign GZIP$ROOT.
+    execute install "CONTINUE" remove "@PCSI$DESTINATION:[SYS$STARTUP]GZIP$STARTUP.COM REMOVE" ;
+
+    information POST_INSTALL phase after ;
+
+end product ;

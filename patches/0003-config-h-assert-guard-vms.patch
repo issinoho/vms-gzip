@@ -1,0 +1,22 @@
+Subject: config.h: let <assert.h> define assert again on OpenVMS
+
+For static_assert, gnulib's config.h includes <assert.h> and then
+#undefs assert, relying on the program's own later #include <assert.h> to
+define it again, as the C standard requires of <assert.h>.  VSI C's
+<assert.h> is guarded by __ASSERT_LOADED, so the second inclusion did
+nothing and every use of assert failed to compile.  Undefine the guard too.
+The text comes from gnulib's m4/assert_h.m4, where the same change
+belongs upstream.  (As in vms-wget.)
+
+--- a/lib/config.hin	2026-10-05 17:02:22.747817159 +0100
++++ b/lib/config.hin	2026-10-05 17:02:22.771746789 +0100
+@@ -2421,6 +2421,9 @@
+              && __GNUG__ < 6 && __clang_major__ < 6)))
+  #include <assert.h>
+  #undef/**/assert
++ #ifdef __VMS
++  #undef/**/__ASSERT_LOADED
++ #endif
+  /* Solaris 11.4 <assert.h> defines static_assert as a macro with 2 arguments.
+     We need it also to be invocable with a single argument.
+     Haiku 2022 <assert.h> does not define static_assert at all.  */

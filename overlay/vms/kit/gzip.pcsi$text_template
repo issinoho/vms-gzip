@@ -1,0 +1,18 @@
+=product @PRODUCER@ @BASE@ GZIP @PCSIVERSION@ full
+1 'PRODUCER
+=prompt @PRODUCER@
+1 'PRODUCT
+=prompt GNU gzip @VERSION@ for OpenVMS
+1 'NOTICE
+=prompt GNU gzip is free software under the GNU General Public License, version 3 or later; see COPYING.
+1 RELEASE_NOTES
+=prompt Documentation is in [GZIP.DOC]README.VMS under the installation directory.
+1 POST_INSTALL
+=prompt Post-installation tasks for GNU gzip
+    At system startup: to define GZIP$ROOT at every boot, add this line to
+    SYS$MANAGER:SYSTARTUP_VMS.COM:
+    $ @SYS$STARTUP:GZIP$STARTUP.COM
+    For each user: to define the commands, add this line to LOGIN.COM:
+    $ @GZIP$ROOT:[000000]GZIP$SETUP.COM
+
+PRODUCT REMOVE GZIP removes the product and deassigns GZIP$ROOT.

@@ -1,0 +1,68 @@
+GNU gzip for OpenVMS
+====================
+
+This is GNU gzip @VERSION@ built natively for OpenVMS @ARCH@, from the
+unmodified release plus the patches in the vms-gzip project:
+
+    https://github.com/issinoho/vms-gzip
+
+Kit version: @KITVERSION@.  GNU gzip is free software under the GNU General
+Public License, version 3 or later; see COPYING.  The manual is GZIP.TXT;
+GZIP.1 is the manual page.
+
+What is installed
+-----------------
+    GZIP$ROOT:[BIN]GZIP.EXE
+    GZIP$ROOT:[DOC]                   this file, COPYING, NEWS, the manual
+    GZIP$ROOT:[000000]GZIP$SETUP.COM  defines the commands
+    SYS$STARTUP:GZIP$STARTUP.COM      defines GZIP$ROOT
+
+Setting up
+----------
+The kit installs GZIP$STARTUP.COM into SYS$STARTUP and runs it once.  To
+define GZIP$ROOT at every boot, the system manager adds this line to
+SYS$MANAGER:SYSTARTUP_VMS.COM:
+
+    $ @SYS$STARTUP:GZIP$STARTUP.COM
+
+Each user (or SYLOGIN.COM, for everyone) then defines the commands:
+
+    $ @GZIP$ROOT:[000000]GZIP$SETUP.COM
+
+Using it
+--------
+    $ gzip "-k" file.txt             ! file.txt.gz, keeping file.txt
+    $ gunzip file.txt.gz             ! gzip -d
+    $ zcat file.txt.gz               ! to SYS$OUTPUT
+    $ gzip "-l" file.txt.gz          ! list it
+    $ gzip "-r" [.dir]               ! every file in a directory tree
+
+A name like file.txt.gz needs an ODS-5 disk.  gunzip also unpacks .Z
+(compress), .z (pack) and .zip files with a single member.  The shell
+scripts upstream installs beside gzip (zcmp, zdiff, zgrep, zless, zmore,
+znew, zforce, gzexe) are not included.
+
+Text and binary files
+---------------------
+A VMS text file (variable-length or VFC records) is compressed as text:
+its records become lines ending in LF, as on Unix, so the compressed file
+can be unpacked anywhere.  Decompressing gives a Stream_LF file with the
+same lines.  Any other file (stream, fixed-length records: executables,
+kits, binary data) is compressed byte for byte.
+
+Exit status
+-----------
+Under DCL a failed run exits with an error-severity status, so ON ERROR and
+IF .NOT. $STATUS work; the exit code N is ($STATUS .AND. %X7F8) / 8.  Exit
+code 2 (a warning, such as trailing garbage ignored) has warning severity.
+Under a GNV shell, $? is the exit code as on Unix.
+
+Upper-case options and batch jobs
+---------------------------------
+Under the TRADITIONAL DCL parse style DCL upper-cases the unquoted parts of
+a command and the C run-time library passes them to the program in lower
+case.  Batch jobs use TRADITIONAL even when interactive logins are set to
+EXTENDED.  Quote options with capitals (such as "-S" and "-N"), use the
+long forms, or start the procedure with
+
+    $ SET PROCESS/PARSE_STYLE=EXTENDED
