@@ -4,8 +4,8 @@
    not defined the corresponding DECC$ logical name, so a site can still
    override any of them.
 
-   Part of the OpenVMS port of GNU gzip (from the GNU grep port); distributed under the GNU
-   General Public License, version 3 or later.  */
+   Part of the OpenVMS port of GNU gzip (from the GNU grep port);
+   distributed under the GNU General Public License, version 3 or later.  */
 
 #include <config.h>
 
@@ -26,14 +26,14 @@ static const struct feature features[] = {
   /* ODS-5 extended file names, case preserved.  */
   { "DECC$EFS_CHARSET", 1 },
   { "DECC$EFS_CASE_PRESERVE", 1 },
-  /* Report file names in Unix form, as grep prints them back.  */
+  /* Report file names in Unix form, as gzip prints them back.  */
   { "DECC$FILENAME_UNIX_REPORT", 1 },
   { "DECC$FILENAME_UNIX_NO_VERSION", 1 },
   /* readdir() returns "foo", not "foo.", for files without a type.  */
   { "DECC$READDIR_DROPDOTNOTYPE", 1 },
   /* Prefer a Unix path over a same-named logical name.  */
   { "DECC$UNIX_PATH_BEFORE_LOGNAME", 1 },
-  /* Allow other processes to read files grep has open.  */
+  /* Allow other processes to read files gzip has open.  */
   { "DECC$FILE_SHARING", 1 },
 };
 

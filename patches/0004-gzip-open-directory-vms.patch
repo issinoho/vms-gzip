@@ -1,0 +1,67 @@
+Subject: gzip: let -r work on directories on OpenVMS
+
+The VMS C RTL cannot open() a directory by its Unix name and reports
+ENOENT, so "gzip -r dir" said "dir: no such file or directory".  When
+the name is a directory, hand back a null-device descriptor with the
+directory's stat; treat_dir already reads directories with opendir()
+by name here (no fdopendir).  (vms-grep solves the same CRTL limit in
+gnulib's open(); gzip does not use the gnulib fchdir module that
+enables that path.)
+
+A directory given in VMS syntax ("gzip -r [.dir]") lists its entries in
+VMS form, "one^.txt;1", which gzip then joined with "/" into names that
+do not exist.  treat_dir now recurses through the Unix form of such a
+name (decc$translate_vms: "[.dir]" -> "./dir").
+
+--- a/gzip.c
++++ b/gzip.c
+@@ -123,6 +123,12 @@
+ # define USE_ATFUNCS false
+ #endif
+ 
++#ifdef __VMS
++/* The C RTL's VMS-to-Unix file name translation (<unixlib.h>, which
++   clashes with gnulib's replacements of getcwd and mkdir).  */
++char *decc$translate_vms (const char *);
++#endif
++
+ #if !USE_ATFUNCS
+ static int
+ gzip_openat (_GL_ATTRIBUTE_MAYBE_UNUSED int fd,
+@@ -1310,6 +1316,16 @@
+     return -1;
+ 
+   fd = openat (atfd, base, flags, 0);
++#ifdef __VMS
++  /* OpenVMS: the C RTL cannot open() a directory by its Unix name ("dir",
++     "dir/", ".") and fails with ENOENT, although stat() and opendir()
++     succeed.  For a directory, return a descriptor for the null device:
++     the caller sees S_ISDIR in *ST, and treat_dir reads the directory
++     with opendir (NAME), as there is no fdopendir.  */
++  if (fd < 0 && errno == ENOENT && stat (name, st) == 0
++      && S_ISDIR (st->st_mode))
++    return open ("/dev/null", O_RDONLY);
++#endif
+   if (0 <= fd && fstat (fd, st) != 0)
+     {
+       int e = errno;
+@@ -2029,6 +2045,19 @@
+     char const *entry;
+     size_t entrylen;
+ 
++# ifdef __VMS
++    /* OpenVMS: a directory named in VMS syntax ("[.dir]", "DKA0:[dir]")
++       lists its entries in VMS form ("one^.txt;1"), which cannot be joined
++       to the name with "/".  Use the directory's Unix name ("./dir").  */
++    char vmsdir[MAX_PATH_LEN];
++    if (strpbrk (dir, ":[]<>") != NULL)
++      {
++        char *u = decc$translate_vms (dir);
++        if (u != NULL && u != (char *) -1 && strlen (u) < sizeof vmsdir)
++          dir = strcpy (vmsdir, u);
++      }
++# endif
++
+ # if HAVE_FDOPENDIR
+     dirp = fdopendir (fd);
+ # else

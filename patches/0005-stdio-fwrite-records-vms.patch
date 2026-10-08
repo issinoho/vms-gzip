@@ -1,8 +1,8 @@
 Subject: lib/stdio.in.h: on OpenVMS, route fwrite() through vms_fwrite()
 
 For record-oriented output (a terminal, a log file, a mailbox) the VSI C
-RTL writes each fwrite() item as a record of its own: diff's output, which
-writes lines in pieces, appeared one character per line at the terminal.
+RTL writes each fwrite() item as a record of its own, so output written
+in pieces would appear one piece, or one character, per line.
 vms_fwrite() (vms/vms_fwrite.c) writes with putc(), which the C RTL
 assembles into records at newlines.  (grep does the same in vms-grep.)
 

@@ -2,5 +2,6 @@
 0001-getprogname-vms.patch
 0002-stdlib-vms-exit-severity.patch
 0003-config-h-assert-guard-vms.patch
-0004-open-directory-enoent-vms.patch
+0004-gzip-open-directory-vms.patch
 0005-stdio-fwrite-records-vms.patch
+0006-gzip-program-name-vms.patch

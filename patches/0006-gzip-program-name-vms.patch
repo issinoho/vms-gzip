@@ -1,0 +1,34 @@
+Subject: gzip: take the program name from getprogname() on OpenVMS
+
+argv[0] is the image file's full VMS name, so every message began
+"GZIP.EXE: " and the gunzip/zcat name checks could never match.
+getprogname() (patch 0001) gives the lower-case image name.
+
+--- a/gzip.c
++++ b/gzip.c
+@@ -64,6 +64,9 @@
+ #include "version.h"
+ 
+ #include <dirname.h>
++#ifdef __VMS
++# include <getprogname.h>
++#endif
+ #include <filename.h>
+ #include <ignore-value.h>
+ #include <intprops.h>
+@@ -470,7 +473,15 @@
+ 
+     EXPAND(argc, argv); /* wild card expansion if necessary */
+ 
++#ifdef __VMS
++    /* OpenVMS: argv[0] is the image file's full name, such as
++       "DKA0:[GZIP.BIN]GZIP.EXE;1", so messages began "GZIP.EXE: ".
++       getprogname() reduces it to "gzip" (lib/getprogname.c), and an image
++       copied to GUNZIP.EXE or ZCAT.EXE is "gunzip" or "zcat".  */
++    program_name = (char *) getprogname ();
++#else
+     program_name = gzip_base_name (argv[0]);
++#endif
+     proglen = strlen (program_name);
+ 
+     /* Suppress .exe for MSDOS and OS/2: */

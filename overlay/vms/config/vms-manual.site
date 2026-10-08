@@ -5,7 +5,7 @@
 # compiler-feature tests, and anything it got wrong.  Give a reason
 # for every entry.
 
-# x86 CRTL has pthread_sigmask, IA64 does not.  wget is built without threads,
+# x86 CRTL has pthread_sigmask, IA64 does not.  gzip is built without threads,
 # so use sigprocmask on both for identical behaviour.
 ac_cv_func_pthread_sigmask=no
 
@@ -20,9 +20,8 @@ ac_cv_func_mempcpy=yes
 gl_cv_onwards_func_mempcpy=yes
 
 
-# struct sched_param is in <pthread.h> on VMS (gnulib knows; patch 0004 makes
-# configure ask for host "openvms").  The VSI C configure run predates that
-# patch and never asked, so record the answer here.
+# struct sched_param is in <pthread.h> on VMS; record the answer so the host
+# configure run does not take Linux's.
 ac_cv_type_struct_sched_param=yes
 
 # gnulib's strcasecmp test is a run test with no cross-compiling answer.  It

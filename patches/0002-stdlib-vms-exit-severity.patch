@@ -1,7 +1,7 @@
 Subject: stdlib.h: on OpenVMS, route exit() through vms_exit()
 
 With _POSIX_EXIT, the VSI C RTL encodes exit(n) as %X35A000 + n*8 + 1,
-which has success severity: an m4 run that failed left $SEVERITY at 1,
+which has success severity: a gzip run that failed left $SEVERITY at 1,
 and DCL's ON ERROR never fired.  At the end of gnulib's <stdlib.h>
 wrapper, redefine exit() to call vms_exit() (vms/vms_exit.c), which gives
 an error-severity status under DCL and the POSIX status under a GNV shell.
