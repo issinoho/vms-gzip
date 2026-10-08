@@ -14,7 +14,7 @@ with the tarball into `staging/`, which is pushed to a VMS node and built there 
 | Build (`tools/build.sh`) | clean | clean |
 | DCL smoke test, 25 checks (`tools/test.sh`) | 25/25 | 25/25 |
 | PCSI kit `ISSINOHO <base> GZIP V1.15-0E1` (`tools/kit.sh`) | built | built |
-| Install check (`tools/installcheck.sh`) | not yet run | not yet run |
+| Install check (`tools/installcheck.sh`): install, smoke 25/25, clean removal | pass | pass |
 
 `gzip -l` output for a VMS text file matches Linux gzip byte for byte (records become
 LF-terminated lines). See `docs/TESTING.md` for what the smoke test covers.

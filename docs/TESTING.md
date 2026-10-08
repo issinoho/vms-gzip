@@ -24,7 +24,9 @@ Runs from the built tree, or against an installed kit
 - `PIPE gzip -c | gzip -dc | SEARCH`: compressed data through mailboxes.
 - DCL `$SEVERITY` is 2 (error) after a failure (patch 0002).
 
-Results, 2026-10-08: 25/25 on IA64 (V8.4-2L3) and x86-64 (E9.2-4).
+Results, 2026-10-08: 25/25 on IA64 (V8.4-2L3) and x86-64 (E9.2-4), from the build tree
+and from the installed kit (install check: kit installs, smoke passes, removal leaves
+no files, startup procedure or GZIP$ROOT behind).
 
 ## Pitfalls when writing DCL tests
 
