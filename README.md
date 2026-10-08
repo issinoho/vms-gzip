@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/images/banner.svg" alt="GNU gzip for OpenVMS: a DECterm window compressing SYSTARTUP_VMS.COM with gzip and listing the result, with the GNU head" width="100%">
+</p>
+
 # vms-gzip
 
 GNU gzip 1.15 for OpenVMS (IA64 and x86-64), built natively with VSI C.
