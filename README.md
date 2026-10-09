@@ -4,6 +4,8 @@
 
 # vms-gzip
 
+[![Downloads](https://img.shields.io/github/downloads/issinoho/vms-gzip/total?label=downloads)](https://github.com/issinoho/vms-gzip/releases)
+
 GNU gzip 1.15 for OpenVMS (IA64 and x86-64), built natively with VSI C.
 
 The repository stores only our changes over the signed upstream release: `patches/`
