@@ -4,7 +4,9 @@
 
 # vms-gzip
 
+[![Release](https://img.shields.io/github/v/release/issinoho/vms-gzip?label=release)](https://github.com/issinoho/vms-gzip/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/issinoho/vms-gzip/total?label=downloads)](https://github.com/issinoho/vms-gzip/releases)
+![OpenVMS](https://img.shields.io/badge/OpenVMS-IA64%20%7C%20x86--64-blue)
 
 GNU gzip 1.15 for OpenVMS (IA64 and x86-64), built natively with VSI C.
 
