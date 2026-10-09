@@ -55,3 +55,17 @@ tools/vms_configure.sh <node>                  # once per upstream release: conf
 Known limits (also in the kit's README.VMS): `.gz` keeps no VMS file attributes, so binary
 files come back as Stream_LF and need `SET FILE/ATTRIBUTES`; `>` on the command line is not
 handled by the C RTL (use `PIPE`); the `z*` shell scripts are not shipped.
+
+## Licence
+
+GNU gzip is free software under the GNU General Public License, version 3 or later;
+see `COPYING`. Our patches and VMS files are distributed under the same terms.
+
+## Artwork
+
+`docs/images/banner.svg` and `docs/images/icon.svg` were made for this project in the style of
+classic DECwindows and VT terminals, like those of its sibling ports. They incorporate the
+[GNU head](https://www.gnu.org/graphics/heckert_gnu.html) by Aurelio A. Heckert, © 2003 Free
+Software Foundation, Inc., used under the Creative Commons Attribution-ShareAlike 2.0 licence.
+The two images are therefore also licensed under
+[CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/).
