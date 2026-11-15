@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Guidance for working in this repository: a port of GNU gzip to OpenVMS (IA64 and x86-64)
+Guidance for working in this repository: a port of GNU gzip to OpenVMS (IA64, x86-64 and Alpha)
 that stores only our deltas over the upstream release tarball. Read README.md first; it
 describes the workflow and design. This file covers the rules and the pitfalls.
 
@@ -23,11 +23,43 @@ describes the workflow and design. This file covers the rules and the pitfalls.
   `tools/nodes.conf`.
 - Keep `docs/TESTING.md` and the README status table in step with test results.
 
+## Alpha
+
+- `build.sh`/`test.sh`/`kit.sh`/`installcheck.sh` use `vms.sh batch` there (interactive ssh
+  output is unreliable; a batch job starts in the login directory, so each job sets default
+  to the work directory). `vms.sh` is vms-grep's (it retries a command that never started).
+- DCL: compare architecture names with `.EQS.`, never `.EQ.` (integer compare: every name
+  equals every other). `build.com` upper-cases `F$GETSYI("ARCH_NAME")` and accepts ALPHA.
+- The AXPVMS kit has its own README (`README_AXPVMS.VMS`). Patch level 2 is the Alpha kit;
+  the x86-64 and IA64 kits stay on 1.
+- Floating point: `ccflags.txt` already has `/FLOAT=IEEE_FLOAT/IEEE_MODE=DENORM_RESULTS`
+  for every architecture.
+- No assembly: `ASMV`/`match.S` is only for MS-DOS (`tailor.h`), the `dfltcc.c` inline
+  assembly (IBM Z) is not built (`IBM_Z_DFLTCC` undefined) and there is no CRC intrinsic
+  path (`GL_CRC_X86_64_PCLMUL` undefined); the Alpha build is the portable C code.
+- Alpha has no GNV and no Perl: smoke test plus manual round trips only (gzip's upstream
+  test suite needs GNV).
+- Configuration: the Alpha uses the shared IA64-derived `config.h`, justified by replaying
+  configure's test programs on the node; see the Alpha note in
+  `overlay/vms/config/vms-manual.site`.
+- The Alpha compiler gives five `%CC-W-UNSUPCONVSPEC` in `gzip.c` (`%ju` in the "other link"
+  message, `%*jd` in the `-l`/`-lv` listing; `intmax_t` is 64 bits). They are harmless: a
+  probe built with the same qualifiers printed `%jd`, `%*jd`, `%ju`, `%*ju` correctly for
+  0, -1, INT_MAX, INT_MAX+1, 2^32, 5396480, INT64_MIN/MAX and UINT_MAX, 2^32 and UINT64_MAX,
+  and `gzip -l` on the Alpha gave the same line as Linux gzip for a 5.4 MB file
+  (2026-11-15). The link then says `%LINK-W-WRNERS` (compilation warnings in gzip.OBJ) but
+  writes the image. About 47 `%CC-I-QUESTCOMPARE` and 2 `QUESTCOMPARE1` are informational
+  (gnulib's `ckd_*` and timespec macros).
+- Manual checks on the Alpha (no Perl/GNV): a 4.4 MB BACKUP save set compresses and
+  decompresses with identical CHECKSUM (and `cmp`-identical bytes when fetched to the host);
+  a .gz made by Linux gzip (`-9`, 5.4 MB tar) tests and decompresses to a file with the same
+  size and CHECKSUM as the original; a .gz made on the Alpha decompresses with Linux gzip to
+  the original. DIFFERENCES cannot compare a Stream_LF tar (record too large): use CHECKSUM.
 ## Commands
 
 ```sh
 tools/prepare.sh                        # always first after changing patches/overlay
-tools/build.sh <ia64|x86> [ALL|CLEAN] [KEEP_GOING]
+tools/build.sh <ia64|x86|alpha> [ALL|CLEAN] [KEEP_GOING]
 tools/test.sh <node>                    # smoke test
 tools/vms.sh <node> dcl '<cmd>' ...     # run DCL; also run/batch/put/get
 tools/kit.sh <node>                     # PCSI kit -> out/kits/ (producer ISSINOHO)

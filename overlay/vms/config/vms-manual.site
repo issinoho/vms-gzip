@@ -29,3 +29,34 @@ ac_cv_type_struct_sched_param=yes
 # guess, "yes" for all but Solaris and Cygwin); VSI's C RTL compares bytes
 # with tolower() like any C library.
 gl_cv_func_strcasecmp_works=yes
+
+# OpenVMS Alpha (V8.4-2L2, VSI C V7.4-002): the staged config.h, generated from the IA64
+# answers (configure-ia64.cache), is shared by all three architectures.  No full configure
+# was run on the Alpha.  Instead every test program that the IA64 configure run sends to
+# VSI C was compiled, linked or preprocessed on the node with the real compiler qualifiers
+# and defines (ccflags.txt), as the compile server does, in one batch job.  The programs
+# were collected by running configure on the host against the IA64 answer memo with a
+# recording compiler stub (no node needed; it reproduced configure-ia64.cache exactly, with
+# no memo misses), so they are configure's own text with its confdefs.h.  308 distinct
+# programs (318 calls, some repeated):
+#   - 237 compile tests (116 ok, 121 fail): headers, declarations, types, members and the
+#     compiler-feature tests behind ac_cv_c_*, gl_cv_c_* and gl_cv_header_*.
+#   - 59 link tests (32 ok, 27 fail): the functions (ac_cv_func_*, gnulib's "onwards" and
+#     gl_cv_func_* link checks), ac_cv_lib_* and ac_cv_search_*.
+#   - 12 preprocess tests (8 ok, 4 fail).
+# Result: all 308 give the same verdict on the Alpha as on the IA64 (0 differences).  For
+# the 8 preprocess tests that produce output, 7 give the same text as the IA64 apart from
+# the line markers; one (the pthread_sigmask test, which only looks at _WIN32) differs in
+# the CRTL's system headers (IA64 compiler intrinsics such as __dsrlz and __fc, Alpha
+# exception-frame fields such as chf$q_mch_savr16 and __PAL_IMB), which the test ignores.
+# mempcpy, pthread_sigmask and struct sched_param are not among the programs: they are
+# settled above, for all architectures.  So the one config.h serves IA64, x86-64 and Alpha.
+# A short run-time probe (linked with the same qualifiers) agrees with the cached run-time
+# answers: long, pointers, size_t, ptrdiff_t, time_t, wchar_t, wint_t and sig_atomic_t are
+# 32 bits, off_t 64; size_t, wchar_t and time_t unsigned, ptrdiff_t, wint_t and
+# sig_atomic_t signed; little-endian; realloc(p,0) returns NULL; open() of a directory
+# fails with ENOENT (gl_cv_func_open_directory_works=no); stat() of "file/" fails; mktime()
+# of 1970-01-01 gives -1.  Where the Alpha is better than the cross run's guess
+# (malloc(0) returns non-NULL, getcwd(NULL,0) works), gnulib then uses its own replacement,
+# which is also what the IA64 and x86-64 builds use; the replacements work on every
+# architecture.

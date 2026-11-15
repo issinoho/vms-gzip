@@ -148,7 +148,9 @@ done
 rm -f "$kit/gzip.pcsi\$desc_template" "$kit/gzip.pcsi\$text_template"
 mv "$kit/gzip\$startup.com" "$kit/GZIP\$STARTUP.COM"
 mv "$kit/gzip\$setup.com" "$kit/GZIP\$SETUP.COM"
-subst "" "IA64 and x86-64" < "$kit/readme.vms" > "$kit/README.VMS"; rm -f "$kit/readme.vms"
+subst "" "IA64 and x86-64" < "$kit/readme.vms" > "$kit/README.VMS"
+# The Alpha kit has its own README (the others are unchanged, so their kits stay as released).
+subst "" "Alpha" < "$kit/readme.vms" > "$kit/README_AXPVMS.VMS"; rm -f "$kit/readme.vms"
 mkdir -p "$kit/doc"
 cp "$stage/COPYING" "$kit/doc/COPYING."
 cp "$stage/NEWS" "$kit/doc/NEWS."
